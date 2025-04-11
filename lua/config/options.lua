@@ -10,8 +10,8 @@
 -- See: https://neovim.io/doc/user/vim_diff.html
 -- [2] Defaults - *nvim-defaults*
 
-local g = vim.g -- Global variables
-local opt = vim.opt -- Set options (global/buffer/windows-scoped)
+local g = vim.g
+local opt = vim.opt
 
 -----------------------------------------------------------
 -- General
@@ -26,7 +26,6 @@ opt.completeopt = "menuone,noinsert,noselect" -- Autocomplete options
 -----------------------------------------------------------
 opt.number = true -- Show line number
 opt.showmatch = true -- Highlight matching parenthesis
-opt.foldmethod = "marker" -- Enable folding (default 'foldmarker')
 opt.colorcolumn = "0" -- Line lenght marker at 80 columns
 opt.splitright = true -- Vertical split to the right
 opt.splitbelow = true -- Horizontal split to the bottom
@@ -56,39 +55,16 @@ opt.updatetime = 250 -- ms to wait for trigger an event
 -----------------------------------------------------------
 -- Startup
 -----------------------------------------------------------
-function my_paste(reg)
-  return function(lines)
-    --[ 返回 “” 寄存器的内容，用来作为 p 操作符的粘贴物 ]
-    local content = vim.fn.getreg('"')
-    return vim.split(content, "\n")
-  end
+-- Function to handle pasting correctly
+local function my_paste()
+  local content = vim.fn.getreg('"')
+  return vim.split(content, "\n"), vim.fn.getregtype('"')
 end
---
---if os.getenv("SSH_TTY") == nil then
---  --[ 当前环境为本地环境，也包括 wsl ]
---  opt.clipboard:append("unnamedplus")
---else
---  opt.clipboard:append("unnamedplus")
---  vim.g.clipboard = {
---    name = "OSC 52",
---    copy = {
---      ["+"] = require("vim.ui.clipboard.osc52").copy("+"),
---      ["*"] = require("vim.ui.clipboard.osc52").copy("*"),
---    },
---    paste = {
---      --[ 小括号里面的内容可能是毫无意义的，但是保持原样可能看起来更好一点 ]
---      ["+"] = my_paste("+"),
---      ["*"] = my_paste("*"),
---    },
---  }
---end
 
-if os.getenv("SSH_TTY") == nil then
-  -- Local environment, including WSL
-  vim.opt.clipboard = "unnamedplus"
-else
-  -- Use OSC52 for remote environment
-  vim.g.clipboard = {
+-- Check if running in SSH (remote)
+if vim.env.SSH_TTY then
+  -- Use OSC52 for remote clipboard handling
+  g.clipboard = {
     name = "osc52",
     copy = {
       ["+"] = function(lines, _)
@@ -99,12 +75,11 @@ else
       end,
     },
     paste = {
-      ["+"] = function()
-        return { vim.fn.split(vim.fn.getreg('"'), "\n"), vim.fn.getregtype("+") }
-      end,
-      ["*"] = function()
-        return { vim.fn.split(vim.fn.getreg('"'), "\n"), vim.fn.getregtype("*") }
-      end,
+      ["+"] = my_paste,
+      ["*"] = my_paste,
     },
   }
+else
+  -- Use system clipboard (including WSL)
+  opt.clipboard = "unnamedplus"
 end
