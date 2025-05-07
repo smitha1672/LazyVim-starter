@@ -1,3 +1,4 @@
+--[[
 return {
   "nvim-neo-tree/neo-tree.nvim",
   opts = {
@@ -18,3 +19,10 @@ return {
     },
   },
 }
+]]
+
+return {
+  "nvim-neo-tree/neo-tree.nvim",
+  enabled = false,
+}
+
