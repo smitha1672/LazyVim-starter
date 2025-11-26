@@ -44,7 +44,7 @@ return {
         optional = true,
         opts = {
           defaults = {
-            ["<leader>d"] = { name = "+debug" },
+            ["<leader>d"] = { name = "debug" },
           },
         },
       },
