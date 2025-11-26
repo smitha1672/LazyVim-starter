@@ -6,7 +6,7 @@ return {
     end,
   },
   {
-    "williamboman/mason.nvim",
+    "mason-org/mason.nvim",
     config = function()
       -- mason config
     end,
