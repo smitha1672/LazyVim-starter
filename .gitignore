@@ -6,3 +6,6 @@ debug
 foo.*
 *.log
 data
+
+# local state
+.indent_style
