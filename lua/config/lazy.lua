@@ -34,7 +34,6 @@ require("lazy").setup({
   },
 
   defaults = {
-    lazy = false, -- Load your plugins immediately (not lazy-loaded)
     version = false, -- Always use latest commit
   },
 
