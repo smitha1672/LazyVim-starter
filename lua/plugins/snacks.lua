@@ -19,6 +19,24 @@ return {
         explorer = {
           hidden = false,
           ignored = true,
+          actions = {
+            copy_file_path = function(_, item)
+              if not item then
+                return
+              end
+              local path = vim.fn.fnamemodify(item.file, ":p")
+              vim.fn.setreg('"', path)
+              vim.fn.setreg("+", path)
+              Snacks.notify.info("Copied: " .. path)
+            end,
+          },
+          win = {
+            list = {
+              keys = {
+                ["Y"] = "copy_file_path",
+              },
+            },
+          },
         },
       },
     },
