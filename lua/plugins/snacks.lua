@@ -17,7 +17,7 @@ return {
       hidden = false,
       sources = {
         explorer = {
-          hidden = false,
+          hidden = true,
           ignored = true,
           actions = {
             copy_file_path = function(_, item)
